@@ -6,12 +6,17 @@ const envSchema = z.object({
     .enum(["development", "production", "test"])
     .default("development"),
   PORT: z.coerce.number().default(3000),
+  DATABASE_URL: z.string(),
+  DIRECT_URL: z.string(),
 });
 
 const _env = envSchema.safeParse(process.env);
 
 if (!_env.success) {
-  console.error("Error validating environment variables:", _env.error.format());
+  console.error(
+    "Error validating environment variables:",
+    z.treeifyError(_env.error)
+  );
   process.exit(1);
 }
 
